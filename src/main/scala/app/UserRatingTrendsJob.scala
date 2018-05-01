@@ -1,9 +1,8 @@
 package app
 
-import app.SparkApp.{loadData, projectPath, spark}
 import model._
 
-object DifferentFromFriends extends BaseSparkApp {
+object UserRatingTrendsJob extends BaseSparkApp {
 
   import spark.implicits._
 
@@ -12,8 +11,6 @@ object DifferentFromFriends extends BaseSparkApp {
     if(args.nonEmpty) {
       projectPath = args(0)
     }
-
-    println("test")
 
     lazy val user = loadData[User]("user.json")
     lazy val usersWithFriends = user filter {
@@ -52,7 +49,7 @@ object DifferentFromFriends extends BaseSparkApp {
         }).toMap
       }
       id -> (selfReviews map { case (bId, selfR) =>
-        math.abs(selfR - friendReviews.getOrElse(bId, selfR)) / selfR
+        (bId, math.abs(selfR - friendReviews.getOrElse(bId, selfR)) / selfR)
       }).mkString(",")
     }
     diffFromFriends.saveAsTextFile(args(1))

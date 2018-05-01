@@ -11,7 +11,7 @@ object BestSecretBusinessJob extends BaseSparkApp {
     if (args.nonEmpty) {
       projectPath = args(0)
     }
-    val keyword = args(1)
+    val keyword = args(2)
 
     lazy val business = loadData[Business]("business.json").rdd.keyBy(_.business_id)
     val tip = loadData[Tip]("tip.json").rdd.filter(_.text.toLowerCase.contains(keyword.toLowerCase())).keyBy(_.business_id)
@@ -27,7 +27,7 @@ object BestSecretBusinessJob extends BaseSparkApp {
       v.toSeq.sortBy(_._2)(Ordering[Double].reverse).take(10)
     }
 
-    result.collect.foreach(println)
+    result.coalesce(1).saveAsTextFile(args(1))
 
   }
 }

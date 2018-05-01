@@ -23,6 +23,6 @@ object Best10Job extends BaseSparkApp {
     keyed.map{ case(k, rating) => k -> rating.toSeq.sortBy(_._4).take(10).map(_._3).mkString(",")}
       .sortBy(_._1._1)
       .map(k => s"${k._1._1},${k._1._2},${k._2}")
-      .saveAsTextFile("Best10")
+      .saveAsTextFile(args(1))
   }
 }

@@ -33,7 +33,7 @@ object TopUsersJob extends BaseSparkApp {
         .mapValues(v => v.map(_._2).sum)
         .toSeq
         .sortBy(_._2)(Ordering[Int].reverse).take(10).map(_._1).mkString(","))
-      .saveAsTextFile(args(1))
+      .saveAsTextFile(args(1)+"TopUser")
 
   }
 }
